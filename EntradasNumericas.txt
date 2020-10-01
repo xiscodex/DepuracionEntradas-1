@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace EntradasNumericas
+{
+    public partial class Form1 : Form
+    {
+        string mensaje =
+        "Las entradas de numeros decimales utilizando Textbox en C#, " +
+        "tiene el problema de que al convertir las entradas a Decimal o Double, solo vale la coma ( , )  \n" +
+        "El punto ( . ) es eliminado al hacer Convert.Double()  \n" +
+        " Sin embargo al operar con números decimales en C#, solo se admite el punto( . )  \n" +
+         "- Este programa Depura Entradas Numéricas NO CORRECTAS  \n" +
+         "- Permite la entrada de Una Sola Coma ( , ) para decimales \n" +
+         "- Considera la entrada punto (.) como No Admitido en la entrada \n" +
+         "- Convierte la entrada depurada en un numero Double util para operar en C#";
+
+        bool vale=true;
+        bool sup = false;
+     
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void txtEntrada_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            lbSalida.Text = ""; //Estetica, borra salida anterior
+            if (e.KeyChar == 44 || (e.KeyChar >= 48 && e.KeyChar <= 57)) { }
+            else
+            {      
+             vale = false;
+
+             //filtro de SUP y ENTER
+             int filtro = Convert.ToInt16(e.KeyChar);
+             if (filtro == 8||filtro==13)
+             { txtEntrada.Text = ""; vale = true; }
+            }
+        }
+
+
+        private void btnEntrada_Click(object sender, EventArgs e)
+        {
+            if (vale)
+            {
+                try
+                {   //si al convertir hay 2 COMAS salta al Catch
+                    Double nn = Convert.ToDouble(txtEntrada.Text);
+
+                    //conversion final de COMA en PUNTO
+                    string trans = txtEntrada.Text;
+                    string trans2="";
+                    for(int z = 0; z<trans.Length; z++)
+                    {
+                        if (trans2 == ",") { trans2 = "."; }
+                        trans2 = trans2 + trans.Substring(z,1);     
+                    }
+
+                //Resultado final con numero operativo
+                Double nnn = Convert.ToDouble(trans2);
+                lbSalida.Text = nnn.ToString();
+                    txtEntrada.Text = "";
+                    txtEntrada.Focus();
+                    vale = true;
+
+                }
+                catch  //para error de mas de una coma
+                {
+                    MessageBox.Show(txtEntrada.Text + "\nE N T R A D A  I N C O R R E C T A\n"+"Los numero decimales tienen una sola coma ( , )");
+                    txtEntrada.Text = "";
+                    txtEntrada.Focus();
+                    vale = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show(txtEntrada.Text+"\nE N T R A D A   I N C O R R E C T A\n"+"Solo se permiten numeros enteros y decimales con coma ( , )");
+                txtEntrada.Text = "";
+                txtEntrada.Focus();
+                vale = true;
+            }
+        } //fin btn_entrada
+
+        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(mensaje+"\n\nUn programa de Francisco J. Moreno Fernández \nxiscodex@gmail.com \nSeptiembre de 2020");
+        }
+
+        private void salirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    } //fin clase
+} //fin Namespace
